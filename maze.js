@@ -1,3 +1,7 @@
+function randomInt (min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 function makeMaze(x, y, wid, hig, maze) {
 	var neighborsM = [true, true, true, true];
 	var randSpotM;
@@ -76,10 +80,33 @@ function makeMaze(x, y, wid, hig, maze) {
 		});
 
 		if (completeM) {
-			return maze;
+			return reverseMaze(maze, wid, hig);
 		} else {
 			return makeMaze(pxM, pyM, wid, hig, maze);
 		}
 	}
 
+}
+
+function reverseMaze(list, wid, hig) {
+	var paths = [];
+	var walls = [];
+
+	list.traverseDF(function (node) {
+		paths.push({ "x": node.data.x, "y": node.data.y});
+	});
+
+	for (var X = 0; X < wid; X++) {
+		for (var Y = 0; Y < hig; Y++) {
+			for (var i = 0; i < paths.length; i++) {
+				if (paths[i].x === X && paths[i].y === Y) {
+					break;
+				} else if (i === paths.length - 1) {
+					walls.push({ "x": X, "y": Y});
+				}
+			}
+		}
+	}
+
+	return walls;
 }
